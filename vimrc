@@ -8,7 +8,16 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'yous/vim-open-color'
+Plugin 'jnurmine/Zenburn'
+Plugin 'reasonml-editor/vim-reason-plus'
+Plugin 'ajmwagar/vim-deus'
+Plugin 'victorze/foo'
+Plugin 'xuhdev/vim-latex-live-preview'
+Plugin 'google/vim-maktaba'
+Plugin 'google/vim-codefmt'
+Plugin 'google/vim-glaive'
 Plugin 'artur-shaik/vim-javacomplete2'
+Plugin 'udalov/kotlin-vim'
 Plugin 'skywind3000/asyncrun.vim'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdcommenter'
@@ -42,6 +51,7 @@ Plugin 'lervag/vimtex'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
+call glaive#Install()
 filetype plugin indent on    " required
 "=====================================================
 "===================== SETTINGS ======================
@@ -103,10 +113,10 @@ if has('persistent_undo')
   set undodir=~/.cache/vim
 endif
 
-" color
-colorscheme open-color
+" Colorscheme settings
+set background=light
+colorscheme deus
 set t_Co=256
-set background=dark
 
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux or screen.
 " If you're using tmux version 2.2 or later, you can remove the outermost $TMUX
@@ -344,9 +354,6 @@ nnoremap <leader>ui :<C-u>call <SID>create_go_doc_comment()<CR>
 " plugins expect bash - not fish, zsh, etc
 set shell=bash
 
-" pathogen will load the other modules
-execute pathogen#infect()
-
 " use goimports for formatting
 let g:go_fmt_command = "goimports"
 
@@ -462,3 +469,11 @@ let g:vim_markdown_math = 1   "Allows use of LaTeX
 :  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
 :  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 :augroup END
+
+" for google-java-format
+Glaive codefmt google_java_executable="java -jar /Users/felipearce/Desktop/offline_files/google-java-format-1.7-all-deps.jar"
+
+" tabstop for reason and ocaml files
+set tabstop=4
+autocmd Filetype reason setlocal tabstop=4
+autocmd Filetype html setlocal tabstop=4
