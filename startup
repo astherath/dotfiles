@@ -1,0 +1,10 @@
+# A S C I I A R T
+clear
+
+if [[ -n $(pgrep tmux) ]]; then
+	tmux a
+else
+	cat /Users/felipearce/Desktop/offline_files/screenfetch
+	gif-for-cli -l 1 --display-mode=256 --rows 50 --cols 130 /Users/felipearce/Desktop/offline_files/akumasuper.gif
+	tmux
+fi
