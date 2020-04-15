@@ -10,6 +10,7 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'yous/vim-open-color'
 Plugin 'jnurmine/Zenburn'
 Plugin 'reasonml-editor/vim-reason-plus'
+Plugin 'gilgigilgil/anderson.vim'
 Plugin 'ajmwagar/vim-deus'
 Plugin 'victorze/foo'
 Plugin 'xuhdev/vim-latex-live-preview'
@@ -114,7 +115,8 @@ if has('persistent_undo')
 endif
 
 " Colorscheme settings
-set background=light
+set background=dark
+" colorscheme deus
 colorscheme deus
 set t_Co=256
 
@@ -473,7 +475,45 @@ let g:vim_markdown_math = 1   "Allows use of LaTeX
 " for google-java-format
 Glaive codefmt google_java_executable="java -jar /Users/felipearce/Desktop/offline_files/google-java-format-1.7-all-deps.jar"
 
+let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+execute "set rtp+=" . g:opamshare . "/merlin/vim"
+" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
+let s:opam_share_dir = system("opam config var share")
+let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+
+let s:opam_configuration = {}
+
+function! OpamConfOcpIndent()
+  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+endfunction
+let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+
+function! OpamConfOcpIndex()
+  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+endfunction
+let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+
+function! OpamConfMerlin()
+  let l:dir = s:opam_share_dir . "/merlin/vim"
+  execute "set rtp+=" . l:dir
+endfunction
+let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+
+let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+for tool in s:opam_packages
+  " Respect package order (merlin should be after ocp-index)
+  if count(s:opam_available_tools, tool) > 0
+    call s:opam_configuration[tool]()
+  endif
+endfor
+" ## end of OPAM user-setup addition for vim / base ## keep this line
+
 " tabstop for reason and ocaml files
 set tabstop=4
-autocmd Filetype reason setlocal tabstop=4
-autocmd Filetype html setlocal tabstop=4
+set softtabstop=0 noexpandtab
+set shiftwidth=4
+autocmd FileType html setlocal shiftwidth=2 tabstop=2
+autocmd FileType typescript  setlocal shiftwidth=2 tabstop=2
+autocmd FileType css  setlocal shiftwidth=2 tabstop=2
