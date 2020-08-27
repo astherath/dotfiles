@@ -49,6 +49,9 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-scriptease'
 Plugin 'ervandew/supertab'
 Plugin 'lervag/vimtex'
+Plugin 'huyvohcmc/atlas.vim'
+Plugin 'robertmeta/nofrils'
+Plugin 'rust-lang/rust.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -115,10 +118,13 @@ if has('persistent_undo')
 endif
 
 " Colorscheme settings
-set background=dark
-" colorscheme deus
-colorscheme deus
-set t_Co=256
+" colorscheme nofrils-light
+" set t_Co=256
+let g:nofrils_heavycomments=1
+let g:nofrils_strbackgrounds=1
+let g:nofrils_heavylinenumbers=1
+
+
 
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux or screen.
 " If you're using tmux version 2.2 or later, you can remove the outermost $TMUX
@@ -448,13 +454,18 @@ function! s:compile_and_run()
     elseif &filetype == 'python'
        exec "AsyncRun! time python3 %"
     elseif &filetype == 'ocaml' || &filetype == 'merlin'
-	exec "AsyncRun! ocaml %"
+	   exec "AsyncRun! ocaml %"
     elseif &filetype == 'javascript'
-	exec "AsyncRun! rhino %"
+	   exec "AsyncRun! rhino %"
     elseif &filetype == 'tex'
-	exec "AsyncRun! pdflatex %"
+	   exec "AsyncRun! pdflatex %"
+    elseif &filetype == 'rust'
+	   exec "AsyncRun! rustc % -A warnings; time ./%<"
     endif
 endfunction
+
+" run rustfmt on save globally for rust files
+let g:rustfmt_autosave = 1
 
 " asyncrun now has an option for opening quickfix automatically
 let g:asyncrun_open = 15
@@ -511,9 +522,18 @@ endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
 
 " tabstop for reason and ocaml files
+set noexpandtab
 set tabstop=4
-set softtabstop=0 noexpandtab
+set softtabstop=0
 set shiftwidth=4
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
+autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 autocmd FileType typescript  setlocal shiftwidth=2 tabstop=2
 autocmd FileType css  setlocal shiftwidth=2 tabstop=2
+
+" set code focus immediately
+autocmd BufEnter *.py :NofrilsFocusCode
+
+" mapping for focus modes
+nmap <Leader>z :NofrilsFocusNormal <CR>
+nmap <Leader>m :NofrilsFocusCode <CR>
