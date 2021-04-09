@@ -52,6 +52,19 @@ Plugin 'lervag/vimtex'
 Plugin 'huyvohcmc/atlas.vim'
 Plugin 'robertmeta/nofrils'
 Plugin 'rust-lang/rust.vim'
+Plugin 'preservim/tagbar'
+Plugin 'mindriot101/vim-yapf'
+Plugin 'Chiel92/vim-autoformat'
+Plugin 'dense-analysis/ale'
+Plugin 'prabirshrestha/async.vim'
+Plugin 'prabirshrestha/vim-lsp'
+Plugin 'prabirshrestha/asyncomplete.vim'
+Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'dart-lang/dart-vim-plugin'
+Plugin 'prettier/vim-prettier'
+Plugin 'neoclide/coc.nvim'
+Plugin 'neovimhaskell/haskell-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -63,11 +76,11 @@ set encoding=utf-8              " Set default encoding to UTF-8
 set autoread                    " Automatically reread changed files without asking me anything
 set autoindent
 set smartindent
-" set shiftwidth=4 		" Sets indent width to be consistent with netbeans:
+" set shiftwidth=4		" Sets indent width to be consistent with netbeans:
 set backspace=indent,eol,start  " Makes backspace key more powerful.
 set incsearch                   " Shows the match while typing
 set hlsearch                    " Highlight found searches
-set clipboard=unnamed 		" Changes default clipboard to system
+set clipboard=unnamed		" Changes default clipboard to system
 "set mouse=a                     "Enable mouse mode
 
 " Disables automatic comment insertion for newlines
@@ -113,35 +126,37 @@ set maxmempattern=20000
 set viminfo='1000
 
 if has('persistent_undo')
-  set undofile
-  set undodir=~/.cache/vim
+	set undofile
+	set undodir=~/.cache/vim
 endif
 
 " Colorscheme settings
-" colorscheme nofrils-light
-" set t_Co=256
+" set background=dark
+" colorscheme deus
 let g:nofrils_heavycomments=1
 let g:nofrils_strbackgrounds=1
 let g:nofrils_heavylinenumbers=1
 
 
+colorscheme nofrils-light
+set t_Co=256
 
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux or screen.
 " If you're using tmux version 2.2 or later, you can remove the outermost $TMUX
 " check and use tmux's 24-bit color support
 " (http://sunaku.github.io/tmux-24bit-color.html#usage for more information.)
 if empty($TMUX) && empty($STY)
-  " See https://gist.github.com/XVilka/8346728.
-  if $COLORTERM =~# 'truecolor' || $COLORTERM =~# '24bit'
-    if has('termguicolors')
-      " See :help xterm-true-color
-      if $TERM =~# '^screen'
-        let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-        let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-      endif
-      set termguicolors
-    endif
-  endif
+	" See https://gist.github.com/XVilka/8346728.
+	if $COLORTERM =~# 'truecolor' || $COLORTERM =~# '24bit'
+		if has('termguicolors')
+			" See :help xterm-true-color
+			if $TERM =~# '^screen'
+				let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+				let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+			endif
+			set termguicolors
+		endif
+	endif
 endif
 
 
@@ -154,57 +169,57 @@ syntax enable
 set laststatus=2
 
 let s:modes = {
-      \ 'n': 'NORMAL',
-      \ 'i': 'INSERT',
-      \ 'R': 'REPLACE',
-      \ 'v': 'VISUAL',
-      \ 'V': 'V-LINE',
-      \ "\<C-v>": 'V-BLOCK',
-      \ 'c': 'COMMAND',
-      \ 's': 'SELECT',
-      \ 'S': 'S-LINE',
-      \ "\<C-s>": 'S-BLOCK',
-      \ 't': 'TERMINAL'
-      \}
+			\ 'n': 'NORMAL',
+			\ 'i': 'INSERT',
+			\ 'R': 'REPLACE',
+			\ 'v': 'VISUAL',
+			\ 'V': 'V-LINE',
+			\ "\<C-v>": 'V-BLOCK',
+			\ 'c': 'COMMAND',
+			\ 's': 'SELECT',
+			\ 'S': 'S-LINE',
+			\ "\<C-s>": 'S-BLOCK',
+			\ 't': 'TERMINAL'
+			\}
 
 let s:prev_mode = ""
 function! StatusLineMode()
-  let cur_mode = get(s:modes, mode(), '')
+	let cur_mode = get(s:modes, mode(), '')
 
-  " do not update higlight if the mode is the same
-  if cur_mode == s:prev_mode
-    return cur_mode
-  endif
+	" do not update higlight if the mode is the same
+	if cur_mode == s:prev_mode
+		return cur_mode
+	endif
 
-  if cur_mode == "NORMAL"
-    exe 'hi! StatusLine ctermfg=236'
-    exe 'hi! myModeColor cterm=bold ctermbg=148 ctermfg=22'
-  elseif cur_mode == "INSERT"
-    exe 'hi! myModeColor cterm=bold ctermbg=23 ctermfg=231'
-  elseif cur_mode == "VISUAL" || cur_mode == "V-LINE" || cur_mode == "V_BLOCK"
-    exe 'hi! StatusLine ctermfg=236'
-    exe 'hi! myModeColor cterm=bold ctermbg=208 ctermfg=88'
-  endif
+	if cur_mode == "NORMAL"
+		exe 'hi! StatusLine ctermfg=236'
+		exe 'hi! myModeColor cterm=bold ctermbg=148 ctermfg=22'
+	elseif cur_mode == "INSERT"
+		exe 'hi! myModeColor cterm=bold ctermbg=23 ctermfg=231'
+	elseif cur_mode == "VISUAL" || cur_mode == "V-LINE" || cur_mode == "V_BLOCK"
+		exe 'hi! StatusLine ctermfg=236'
+		exe 'hi! myModeColor cterm=bold ctermbg=208 ctermfg=88'
+	endif
 
-  let s:prev_mode = cur_mode
-  return cur_mode
+	let s:prev_mode = cur_mode
+	return cur_mode
 endfunction
 
 function! StatusLineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+	return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
 
 function! StatusLinePercent()
-  return (100 * line('.') / line('$')) . '%'
+	return (100 * line('.') / line('$')) . '%'
 endfunction
 
 function! StatusLineLeftInfo()
- let branch = fugitive#head()
- let filename = '' != expand('%:t') ? expand('%:t') : '[No Name]'
- if branch !=# ''
-   return printf("%s | %s", branch, filename)
- endif
- return filename
+	let branch = fugitive#head()
+	let filename = '' != expand('%:t') ? expand('%:t') : '[No Name]'
+	if branch !=# ''
+		return printf("%s | %s", branch, filename)
+	endif
+	return filename
 endfunction
 
 exe 'hi! myInfoColor ctermbg=240 ctermfg=252'
@@ -258,8 +273,8 @@ nnoremap <space> zz
 " Remove search highlight
 nnoremap <leader><space> :nohlsearch<CR>
 function! s:clear_highlight()
-  let @/ = ""
-  call go#guru#ClearSameIds()
+	let @/ = ""
+	call go#guru#ClearSameIds()
 endfunction
 
 
@@ -328,22 +343,22 @@ vnoremap ? <Esc>?\%><C-R>=line("'<")-1<CR>l\%<<C-R>=line("'>")+1<CR>l
 " Time out on key codes but not mappings.
 " Basically this makes terminal Vim work sanely.
 if !has('gui_running')
-  set notimeout
-  set ttimeout
-  set ttimeoutlen=10
-  augroup FastEscape
-    autocmd!
-    au InsertEnter * set timeoutlen=0
-    au InsertLeave * set timeoutlen=1000
-  augroup END
+	set notimeout
+	set ttimeout
+	set ttimeoutlen=10
+	augroup FastEscape
+		autocmd!
+		au InsertEnter * set timeoutlen=0
+		au InsertLeave * set timeoutlen=1000
+	augroup END
 endif
 
 " Visual Mode */# from Scrooloose {{{
 function! s:VSetSearch()
-  let temp = @@
-  norm! gvy
-  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
-  let @@ = temp
+	let temp = @@
+	norm! gvy
+	let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+	let @@ = temp
 endfunction
 
 vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
@@ -351,9 +366,9 @@ vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
 
 " create a go doc comment based on the word under the cursor
 function! s:create_go_doc_comment()
-  norm "zyiw
-  execute ":put! z"
-  execute ":norm I// \<Esc>$"
+	norm "zyiw
+	execute ":put! z"
+	execute ":norm I// \<Esc>$"
 endfunction
 nnoremap <leader>ui :<C-u>call <SID>create_go_doc_comment()<CR>
 
@@ -386,154 +401,233 @@ au Filetype go nnoremap <leader>t :tab split <CR>:exe "GoDef"<CR>
 
 " run :GoBuild or :GoTestCompile based on the go file
 function! s:build_go_files()
-  let l:file = expand('%')
-  if l:file =~# '^\f\+_test\.go$'
-    call go#test#Test(0, 1)
-  elseif l:file =~# '^\f\+\.go$'
-    call go#cmd#Build(0)
-  endif
+	let l:file = expand('%')
+	if l:file =~# '^\f\+_test\.go$'
+		call go#test#Test(0, 1)
+	elseif l:file =~# '^\f\+\.go$'
+		call go#cmd#Build(0)
+	endif
 endfunction
 
 augroup go
 	autocmd!
 
 
- 	autocmd FileType go nmap <silent> <leader>b :<C-u>call <SID>build_go_files()<CR>
-  	autocmd FileType go nmap <silent> <leader>t  <Plug>(go-test)
-  	autocmd FileType go nmap <silent> <leader>r  <Plug>(go-run)
-  	autocmd FileType go nmap <silent> <leader>e  <Plug>(go-install)
+	autocmd FileType go nmap <silent> <leader>b :<C-u>call <SID>build_go_files()<CR>
+	autocmd FileType go nmap <silent> <leader>t  <Plug>(go-test)
+	autocmd FileType go nmap <silent> <leader>r  <Plug>(go-run)
+	autocmd FileType go nmap <silent> <leader>e  <Plug>(go-install)
 	" TEST FOR python TODO
 	" autocmd FileType py nmap <silent> <leader>r <!python %>
 
-" we want to tell the syntastic module when to run
-" we want to see code highlighting and checks when  we open a file
-" but we don't care so much that it reruns when we close the file
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+	" we want to tell the syntastic module when to run
+	" we want to see code highlighting and checks when  we open a file
+	" but we don't care so much that it reruns when we close the file
+	let g:syntastic_check_on_open = 1
+	let g:syntastic_check_on_wq = 0
 
-" we also want to get rid of accidental trailing whitespace on save
-autocmd BufWritePre * :%s/\s\+$//e
+	" we also want to get rid of accidental trailing whitespace on save
+	autocmd BufWritePre * :%s/\s\+$//e
 
-" tell vim to allow you to copy between files, remember your cursor
-" position and other little nice things like that
-set viminfo='100,\"2500,:200,%,n~/.viminfo
+	" tell vim to allow you to copy between files, remember your cursor
+	" position and other little nice things like that
+	set viminfo='100,\"2500,:200,%,n~/.viminfo
 
-" ==================== Fugitive ====================
-vnoremap <leader>gb :Gblame<CR>
-nnoremap <leader>gb :Gblame<CR>
+	" ==================== Fugitive ====================
+	vnoremap <leader>gb :Gblame<CR>
+	nnoremap <leader>gb :Gblame<CR>
 
 
-" ==================== NerdTree ====================
-" For toggling
-noremap <Leader>n :NERDTreeToggle<cr>
-noremap <Leader>f :NERDTreeFind<cr>
+	" ==================== NerdTree ====================
+	" For toggling
+	noremap <Leader>n :NERDTreeToggle<cr>
+	noremap <Leader>f :NERDTreeFind<cr>
 
-let NERDTreeShowHidden=1
+	let NERDTreeShowHidden=1
 
-" ==================== ag ====================
-let g:ackprg = 'ag --vimgrep --smart-case'
+	" ==================== ag ====================
+	let g:ackprg = 'ag --vimgrep --smart-case'
 
-" ==================== NerdCommenter ====================
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 1
+	" ==================== NerdCommenter ====================
+	" Add spaces after comment delimiters by default
+	let g:NERDSpaceDelims = 1
+	let g:NERDCustomDelimiters = { 'forth': { 'left': '//','right': '' } }
 
-" Quick Run
-" Quick run via <F5>
-nnoremap <Leader>r :call <SID>compile_and_run()<CR>
+	" Quick Run
+	" Quick run via <F5>
+	nnoremap <Leader>r :call <SID>compile_and_run()<CR>
 
-function! s:compile_and_run()
-    exec 'w'
-    if &filetype == 'c'
-        exec "AsyncRun! gcc % -o %<; time ./%<"
-    elseif &filetype == 'cpp'
-       exec "AsyncRun! g++ -std=c++11 % -o %<; time ./%<"
-    elseif &filetype == 'java'
-       exec "AsyncRun! javac %; time java %<"
-    elseif &filetype == 'sh'
-       exec "AsyncRun! time bash %"
-    elseif &filetype == 'python'
-       exec "AsyncRun! time python3 %"
-    elseif &filetype == 'ocaml' || &filetype == 'merlin'
-	   exec "AsyncRun! ocaml %"
-    elseif &filetype == 'javascript'
-	   exec "AsyncRun! rhino %"
-    elseif &filetype == 'tex'
-	   exec "AsyncRun! pdflatex %"
-    elseif &filetype == 'rust'
-	   exec "AsyncRun! rustc % -A warnings; time ./%<"
-    endif
-endfunction
+	function! s:compile_and_run()
+		exec 'w'
+		if &filetype == 'c'
+			exec "AsyncRun! gcc % -o %<; time ./%<"
+		elseif &filetype == 'cpp'
+			exec "AsyncRun! g++ -std=c++11 % -o %<; time ./%<"
+		elseif &filetype == 'hs' || &filetype == 'haskell'
+			exec "AsyncRun! ghc -o %< %; time ./%<"
+		elseif &filetype == 'java'
+			exec "AsyncRun! javac %; time java %<"
+		elseif &filetype == 'sh'
+			exec "AsyncRun! time bash %"
+		elseif &filetype == 'python'
+			exec "AsyncRun! time python3 %"
+		elseif &filetype == 'ocaml' || &filetype == 'merlin'
+			exec "AsyncRun! ocaml %"
+		elseif &filetype == 'javascript'
+			exec "AsyncRun! rhino %"
+		elseif &filetype == 'tex'
+			exec "AsyncRun! pdflatex %"
+		elseif &filetype == 'fsharp' || &filetype == 'fsx' || &filetype == 'fs'
+			exec "AsyncRun! dotnet fsi %"
+		elseif &filetype == 'rust'
+			exec "AsyncRun! rustc % -A warnings; time ./%<"
+		elseif &filetype == 'forth'
+			exec "AsyncRun! dotnet run %"
+		endif
+	endfunction
 
-" run rustfmt on save globally for rust files
-let g:rustfmt_autosave = 1
+	" run rustfmt on save globally for rust files
+	let g:rustfmt_autosave = 1
 
-" asyncrun now has an option for opening quickfix automatically
-let g:asyncrun_open = 15
+	" asyncrun now has an option for opening quickfix automatically
+	let g:asyncrun_open = 15
 
-" Markdown additional options for syntax formatting/preview
-let g:vim_markdown_math = 1   "Allows use of LaTeX
+	" Markdown additional options for syntax formatting/preview
+	let g:vim_markdown_math = 1   "Allows use of LaTeX
 
-" Set relative line numbers in insert mode and absolute line
-" Numbers in normal mode
-:set number relativenumber
+	" Set relative line numbers in insert mode and absolute line
+	" Numbers in normal mode
+	:set number relativenumber
 
-:augroup numbertoggle
-:  autocmd!
-:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-:augroup END
+	:augroup numbertoggle
+	:  autocmd!
+	:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+	:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+	:augroup END
 
-" for google-java-format
-Glaive codefmt google_java_executable="java -jar /Users/felipearce/Desktop/offline_files/google-java-format-1.7-all-deps.jar"
+	" for google-java-format
+	Glaive codefmt google_java_executable="java -jar /Users/felipearce/Desktop/offline_files/google-java-format-1.7-all-deps.jar"
 
-let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
-" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+	let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+	execute "set rtp+=" . g:opamshare . "/merlin/vim"
+	" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
+	let s:opam_share_dir = system("opam config var share")
+	let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
 
-let s:opam_configuration = {}
+	let s:opam_configuration = {}
 
-function! OpamConfOcpIndent()
-  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+	function! OpamConfOcpIndent()
+		execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+	endfunction
+	let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
 
-function! OpamConfOcpIndex()
-  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+	function! OpamConfOcpIndex()
+		execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+	endfunction
+	let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
 
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+	function! OpamConfMerlin()
+		let l:dir = s:opam_share_dir . "/merlin/vim"
+		execute "set rtp+=" . l:dir
+	endfunction
+	let s:opam_configuration['merlin'] = function('OpamConfMerlin')
 
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-for tool in s:opam_packages
-  " Respect package order (merlin should be after ocp-index)
-  if count(s:opam_available_tools, tool) > 0
-    call s:opam_configuration[tool]()
-  endif
-endfor
-" ## end of OPAM user-setup addition for vim / base ## keep this line
+	let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+	let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+	let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+	for tool in s:opam_packages
+		" Respect package order (merlin should be after ocp-index)
+		if count(s:opam_available_tools, tool) > 0
+			call s:opam_configuration[tool]()
+		endif
+	endfor
+	" ## end of OPAM user-setup addition for vim / base ## keep this line
 
-" tabstop for reason and ocaml files
-set noexpandtab
-set tabstop=4
-set softtabstop=0
-set shiftwidth=4
-autocmd FileType html setlocal shiftwidth=2 tabstop=2
-autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
-autocmd FileType typescript  setlocal shiftwidth=2 tabstop=2
-autocmd FileType css  setlocal shiftwidth=2 tabstop=2
+	" tabstop for reason and ocaml files
+	set noexpandtab
+	set tabstop=4
+	set softtabstop=0
+	set shiftwidth=4
+	autocmd FileType html setlocal shiftwidth=2 tabstop=2
+	autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
+	autocmd FileType typescript  setlocal shiftwidth=2 tabstop=2
+	autocmd FileType css  setlocal shiftwidth=2 tabstop=2
+	autocmd FileType forth  setlocal shiftwidth=2 tabstop=4 expandtab
 
-" set code focus immediately
-autocmd BufEnter *.py :NofrilsFocusCode
+	" set code focus immediately
+	autocmd BufEnter *.py :NofrilsFocusCode
+	autocmd BufEnter *.rs :NofrilsFocusCode
 
-" mapping for focus modes
-nmap <Leader>z :NofrilsFocusNormal <CR>
-nmap <Leader>m :NofrilsFocusCode <CR>
+	" mapping for focus modes
+	nmap <Leader>z :NofrilsFocusNormal <CR>
+	nmap <Leader>m :NofrilsFocusCode <CR>
+
+	" backup configs
+	"Turn on backup option
+	set backup
+
+	"Where to store backups
+	set backupdir=~/.vim/backup//
+
+	"Make backup before overwriting the current buffer
+	set writebackup
+
+	"Overwrite the original backup file
+	set backupcopy=yes
+
+	"Meaningful backup name
+	au BufWritePre * let &bex = '@' . strftime("%F.%H:%M")
+
+	" py format setup (link: https://github.com/Chiel92/vim-autoformat)
+	" /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+	let g:format_black_py = '"python3.9 -m yapf "'
+	let g:formatters_py = ['format_black_py']
+
+	let g:format_eslint_ts = '"eslint --fix"'
+	let g:formatters_ts = ['format_eslint_ts']
+	au BufWrite *.py :silent Autoformat
+	au BufWrite *.ts :silent Autoformat
+	nmap <Leader>f :silent Autoformat <CR>
+
+	" for ctags
+	nmap <Leader>1 :TagbarToggle<CR>
+
+	" Ale setup (https://github.com/jonhoo/ale)
+	let g:ale_completion_enabled = 1
+	let g:airline#extensions#ale#enabled = 1
+	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+	nmap <silent> <C-j> <Plug>(ale_next_wrap)
+	let g:ale_change_sign_column_color = 1
+	let g:ale_rust_cargo_check_tests = 1
+
+	" Disable linting for python and dart files
+	let g:ale_pattern_options = {'*.py': {'ale_enabled': 1}}
+	let g:ale_pattern_options = {'*.dart': {'ale_enabled': 0}}
+
+	" On cursor short dict lookup
+	function Sdict()
+		echo system("dict " . expand("<cword>") . " | head -n 30")
+		return 1
+	endfunction
+
+	nmap <Leader>* :call Sdict() <CR>
+
+
+    " set statusline+=%#warningmsg#
+    " set statusline+=%{SyntasticStatuslineFlag()}
+    " set statusline+=%*
+
+    " let g:syntastic_always_populate_loc_list = 1
+    " let g:syntastic_auto_loc_list = 1
+    " let g:syntastic_check_on_open = 1
+    " let g:syntastic_check_on_wq = 0
+	let g:dart_format_on_save = 1
+	let dart_html_in_string=v:true
+
+	" typescript formatter with prettier
+	let g:prettier#autoformat = 1
+	let g:prettier#autoformat_require_pragma = 0
+	let g:prettier#exec_cmd_async = 1
+	au BufWrite *.jsx :silent PrettierAsync
+	" au BufWrite *.tsx :silent PrettierAsync
+	autocmd FileType typescript setlocal formatprg=prettier\ --parser\ typescript
