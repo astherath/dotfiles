@@ -7,5 +7,6 @@ cat vimrc > ~/.vimrc
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +PluginInstall +qall
 
-# copy bashrc to ~/.bashrc
-cat bashrc >> ~/.bashrc
+# setup tmux files
+cat tmux.conf >> ~/.tmux.conf
+cat tmux.conf.local >> ~/.tmux.conf.local
