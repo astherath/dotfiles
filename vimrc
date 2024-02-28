@@ -40,13 +40,11 @@ Plugin 'tmux-plugins/vim-tmux', {'for': 'tmux'}
 Plugin 'tmux-plugins/vim-tmux-focus-events'
 Plugin 'tpope/vim-commentary'
 Plugin 'tpope/vim-eunuch'
-Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-scriptease'
 Plugin 'ervandew/supertab'
 Plugin 'lervag/vimtex'
 Plugin 'huyvohcmc/atlas.vim'
-Plugin 'robertmeta/nofrils'
 Plugin 'rust-lang/rust.vim'
 Plugin 'preservim/tagbar'
 Plugin 'mindriot101/vim-yapf'
@@ -64,7 +62,6 @@ Plugin 'neovimhaskell/haskell-vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
-call glaive#Install()
 filetype plugin indent on    " required
 "=====================================================
 "===================== SETTINGS ======================
@@ -129,12 +126,6 @@ endif
 " Colorscheme settings
 " set background=dark
 " colorscheme deus
-let g:nofrils_heavycomments=1
-let g:nofrils_strbackgrounds=1
-let g:nofrils_heavylinenumbers=1
-
-
-colorscheme nofrils-light
 set t_Co=256
 
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux or screen.
@@ -209,15 +200,6 @@ function! StatusLinePercent()
 	return (100 * line('.') / line('$')) . '%'
 endfunction
 
-function! StatusLineLeftInfo()
-	let branch = fugitive#head()
-	let filename = '' != expand('%:t') ? expand('%:t') : '[No Name]'
-	if branch !=# ''
-		return printf("%s | %s", branch, filename)
-	endif
-	return filename
-endfunction
-
 exe 'hi! myInfoColor ctermbg=240 ctermfg=252'
 
 " start building our statusline
@@ -230,7 +212,6 @@ set statusline+=%*
 
 " left information bar (after mode)
 set statusline+=%#myInfoColor#
-set statusline+=\ %{StatusLineLeftInfo()}
 set statusline+=\ %*
 
 " right section seperator
@@ -497,7 +478,6 @@ augroup go
 	:augroup END
 
 	" for google-java-format
-	Glaive codefmt google_java_executable="java -jar /Users/felipearce/Desktop/offline_files/google-java-format-1.7-all-deps.jar"
 
 	let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 	execute "set rtp+=" . g:opamshare . "/merlin/vim"
@@ -545,13 +525,6 @@ augroup go
 	autocmd FileType css  setlocal shiftwidth=2 tabstop=2
 	autocmd FileType forth  setlocal shiftwidth=2 tabstop=4 expandtab
 
-	" set code focus immediately
-	autocmd BufEnter *.py :NofrilsFocusCode
-	autocmd BufEnter *.rs :NofrilsFocusCode
-
-	" mapping for focus modes
-	nmap <Leader>z :NofrilsFocusNormal <CR>
-	nmap <Leader>m :NofrilsFocusCode <CR>
 
 	" py format setup (link: https://github.com/Chiel92/vim-autoformat)
 	" /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
