@@ -14,9 +14,6 @@ Plugin 'gilgigilgil/anderson.vim'
 Plugin 'ajmwagar/vim-deus'
 Plugin 'victorze/foo'
 Plugin 'xuhdev/vim-latex-live-preview'
-Plugin 'google/vim-maktaba'
-Plugin 'google/vim-codefmt'
-Plugin 'google/vim-glaive'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'udalov/kotlin-vim'
 Plugin 'skywind3000/asyncrun.vim'
@@ -28,7 +25,6 @@ Plugin 'cespare/vim-toml'
 Plugin 'corylanou/vim-present', {'for' : 'present'}
 Plugin 'ekalinin/Dockerfile.vim', {'for' : 'Dockerfile'}
 Plugin 'elzr/vim-json', {'for' : 'json'}
-Plugin 'fatih/vim-go'
 Plugin 'fatih/vim-hclfmt'
 Plugin 'fatih/vim-nginx' , {'for' : 'nginx'}
 Plugin 'godlygeek/tabular'
@@ -236,11 +232,6 @@ set statusline+=%*
 set statusline+=%#myInfoColor#
 set statusline+=\ %{StatusLineLeftInfo()}
 set statusline+=\ %*
-
-" go command status (requires vim-go)
-set statusline+=%#goStatuslineColor#
-set statusline+=%{go#statusline#Show()}
-set statusline+=%*
 
 " right section seperator
 set statusline+=%=
@@ -562,22 +553,6 @@ augroup go
 	nmap <Leader>z :NofrilsFocusNormal <CR>
 	nmap <Leader>m :NofrilsFocusCode <CR>
 
-	" backup configs
-	"Turn on backup option
-	set backup
-
-	"Where to store backups
-	set backupdir=~/.vim/backup//
-
-	"Make backup before overwriting the current buffer
-	set writebackup
-
-	"Overwrite the original backup file
-	set backupcopy=yes
-
-	"Meaningful backup name
-	au BufWritePre * let &bex = '@' . strftime("%F.%H:%M")
-
 	" py format setup (link: https://github.com/Chiel92/vim-autoformat)
 	" /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
 	let g:format_black_py = '"python3.9 -m yapf "'
@@ -591,14 +566,6 @@ augroup go
 
 	" for ctags
 	nmap <Leader>1 :TagbarToggle<CR>
-
-	" Ale setup (https://github.com/jonhoo/ale)
-	let g:ale_completion_enabled = 1
-	let g:airline#extensions#ale#enabled = 1
-	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-	nmap <silent> <C-j> <Plug>(ale_next_wrap)
-	let g:ale_change_sign_column_color = 1
-	let g:ale_rust_cargo_check_tests = 1
 
 	" Disable linting for python and dart files
 	let g:ale_pattern_options = {'*.py': {'ale_enabled': 1}}
